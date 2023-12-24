@@ -9,7 +9,8 @@ namespace DependencyInjectionWithAutofac
         {
 
             var builder = new ContainerBuilder();
-            builder.RegisterType<ConsoleLogger>().As<ILogger>();
+            builder.RegisterType<ConsoleLogger>().As<ILogger>().AsSelf();
+            builder.RegisterType<EmailLogger>().As<ILogger>().PreserveExistingDefaults();
             builder.RegisterType<Car>();
             builder.RegisterType<Engine>();
 
@@ -33,6 +34,16 @@ namespace DependencyInjectionWithAutofac
             Console.WriteLine(logText);
         }
     }
+
+    class EmailLogger : ILogger
+    {
+        public const string AdminEmail = "admin@foo.com";
+        public void WriteLog(string logText)
+        {
+            Console.WriteLine($"Email sent to : {AdminEmail} : {logText}");
+        }
+    }
+
     class Car
     {
         private readonly Engine engine;
